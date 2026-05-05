@@ -343,6 +343,24 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* Congela animaciones al exportar */
+  .freeze .workout-field,
+  .freeze .disciplines,
+  .freeze .counter-block,
+  .freeze .road-to,
+  .freeze .race-date,
+  .freeze .im-badge {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  .freeze .progress-fill {
+    animation: none !important;
+    width: var(--target-width) !important;
+    opacity: 0.7 !important;
+  }
+
   /* EXPORT BUTTON */
   .export-wrap {
     display: flex;
@@ -576,6 +594,7 @@
 
     const hiddenLayers = frame.querySelectorAll('.bg-photo, .gradient-top, .gradient-bottom');
     hiddenLayers.forEach(el => el.style.visibility = 'hidden');
+    frame.classList.add('freeze');
 
     btn.textContent = 'Generando…';
     btn.classList.add('loading');
@@ -590,6 +609,7 @@
       });
 
       hiddenLayers.forEach(el => el.style.visibility = '');
+      frame.classList.remove('freeze');
       btn.textContent = 'Exportar overlay';
       btn.classList.remove('loading');
 
@@ -599,6 +619,7 @@
 
     } catch {
       hiddenLayers.forEach(el => el.style.visibility = '');
+      frame.classList.remove('freeze');
       btn.textContent = 'Error — intenta de nuevo';
       btn.classList.remove('loading');
       setTimeout(() => { btn.textContent = 'Exportar overlay'; }, 2500);
