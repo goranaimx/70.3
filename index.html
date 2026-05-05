@@ -296,29 +296,16 @@
     position: absolute;
     bottom: 48px;
     right: 28px;
-    text-align: right;
     opacity: 0;
     animation: fadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
   }
 
-  .im-label {
-    font-size: 7px;
-    font-weight: 900;
-    letter-spacing: 0.3em;
-    color: rgba(255,255,255,0.38);
-    text-transform: uppercase;
+  .im-logo {
+    width: 72px;
+    height: auto;
     display: block;
-    text-shadow: 0 1px 5px rgba(0,0,0,0.8);
-  }
-
-  .im-70 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.28);
-    line-height: 1;
-    display: block;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+    filter: brightness(0) invert(1) opacity(0.35);
+    drop-shadow: 0 1px 6px rgba(0,0,0,0.7);
   }
 
   /* CORNER ACCENT */
@@ -515,8 +502,7 @@
 
   <!-- IRONMAN BADGE -->
   <div class="im-badge">
-    <span class="im-label">Ironman</span>
-    <span class="im-70">70.3</span>
+    <img class="im-logo" src="logo_703.png" alt="Ironman 70.3">
   </div>
 
 </div>
