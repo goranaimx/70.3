@@ -378,14 +378,55 @@
   .export-btn:hover  { background: #1a2f3a; transform: translateY(-2px); }
   .export-btn:active { transform: translateY(0); }
 
-  .export-btn.copied {
-    background: #1a3a2a;
+  .export-btn.loading {
     pointer-events: none;
+    opacity: 0.6;
   }
 
-  .export-btn.error {
-    background: #3a1a1a;
-    pointer-events: none;
+  /* MODAL */
+  .img-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .img-modal.open { display: flex; }
+
+  .img-modal img {
+    max-width: 100%;
+    max-height: 75vh;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  }
+
+  .modal-hint {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .modal-close {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 9999px;
+    padding: 10px 28px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
   }
 </style>
 </head>
@@ -479,6 +520,13 @@
   <button class="export-btn" id="export-btn">Exportar overlay</button>
 </div>
 
+<!-- MODAL: imagen lista para long-press → Copiar -->
+<div class="img-modal" id="img-modal">
+  <span class="modal-hint">Mantén presionada la imagen → Copiar</span>
+  <img id="modal-img" src="" alt="overlay">
+  <button class="modal-close" id="modal-close">Cerrar</button>
+</div>
+
 <script>
   /* ─── Fechas ─── */
   const START_DATE = new Date('2026-04-14T00:00:00');
@@ -523,13 +571,14 @@
   document.getElementById('export-btn').addEventListener('click', async () => {
     const btn   = document.getElementById('export-btn');
     const frame = document.getElementById('story-frame');
+    const modal = document.getElementById('img-modal');
+    const modalImg = document.getElementById('modal-img');
 
-    // Ocultar capas de fondo para PNG transparente
     const hiddenLayers = frame.querySelectorAll('.bg-photo, .gradient-top, .gradient-bottom');
     hiddenLayers.forEach(el => el.style.visibility = 'hidden');
 
     btn.textContent = 'Generando…';
-    btn.style.pointerEvents = 'none';
+    btn.classList.add('loading');
 
     try {
       const canvas = await html2canvas(frame, {
@@ -540,46 +589,26 @@
         logging: false,
       });
 
-      // Restaurar capas
       hiddenLayers.forEach(el => el.style.visibility = '');
+      btn.textContent = 'Exportar overlay';
+      btn.classList.remove('loading');
 
-      // Copiar al clipboard
-      canvas.toBlob(async blob => {
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ 'image/png': blob })
-          ]);
-          btn.textContent = '¡Copiado al clipboard!';
-          btn.classList.add('copied');
-        } catch {
-          // Fallback: descarga directa si clipboard falla (ej. iOS Safari)
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `road-to-703-day${currentDay}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
-          btn.textContent = '¡Descargado!';
-          btn.classList.add('copied');
-        }
+      // Mostrar en modal para long-press → Copiar en iOS
+      modalImg.src = canvas.toDataURL('image/png');
+      modal.classList.add('open');
 
-        setTimeout(() => {
-          btn.textContent = 'Exportar overlay';
-          btn.classList.remove('copied', 'error');
-          btn.style.pointerEvents = '';
-        }, 2500);
-      }, 'image/png');
-
-    } catch (err) {
+    } catch {
       hiddenLayers.forEach(el => el.style.visibility = '');
       btn.textContent = 'Error — intenta de nuevo';
-      btn.classList.add('error');
-      setTimeout(() => {
-        btn.textContent = 'Exportar overlay';
-        btn.classList.remove('error');
-        btn.style.pointerEvents = '';
-      }, 2500);
+      btn.classList.remove('loading');
+      setTimeout(() => { btn.textContent = 'Exportar overlay'; }, 2500);
     }
+  });
+
+  document.getElementById('modal-close').addEventListener('click', () => {
+    const modal = document.getElementById('img-modal');
+    modal.classList.remove('open');
+    document.getElementById('modal-img').src = '';
   });
 </script>
 </body>
