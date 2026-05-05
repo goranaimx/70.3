@@ -73,22 +73,6 @@
     text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 2px 16px rgba(0,0,0,0.6);
   }
 
-  .top-line {
-    flex: 1;
-    height: 1px;
-    background: rgba(255,255,255,0.28);
-  }
-
-  .top-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 1px;
-    background: rgba(255,255,255,0.7);
-    transform: rotate(45deg);
-    flex-shrink: 0;
-    box-shadow: 0 0 6px rgba(0,0,0,0.8);
-  }
-
   /* PROGRESS BAR */
   .progress-container {
     position: absolute;
@@ -195,24 +179,19 @@
     font-size: 7px;
     font-weight: 800;
     letter-spacing: 0.22em;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.35);
     text-transform: uppercase;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.22);
-    padding: 4px 12px;
-    border-radius: 9999px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
     cursor: pointer;
     user-select: none;
-    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    transition: color 0.18s ease, border-color 0.18s ease;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
   }
 
   .disc-tag[data-active="true"] {
-    background: rgba(255,255,255,0.18);
-    border-color: rgba(255,255,255,0.55);
-    color: rgba(255,255,255,0.98);
+    color: rgba(255,255,255,0.95);
+    border-bottom-color: rgba(255,255,255,0.7);
   }
 
   /* CONTADOR */
@@ -475,8 +454,6 @@
   <!-- TOP BAR -->
   <div class="top-bar">
     <span class="top-tag">Training Log</span>
-    <div class="top-line"></div>
-    <div class="top-dot"></div>
   </div>
 
   <!-- PROGRESS BAR -->
@@ -485,7 +462,6 @@
       <div class="progress-fill"></div>
     </div>
     <div class="progress-labels">
-      <span class="progress-label">Día 1</span>
       <span class="progress-label" id="progress-mid">—/163</span>
       <span class="progress-label">Sep 20</span>
     </div>
@@ -516,7 +492,6 @@
 
     <!-- CONTADOR -->
     <div class="counter-block">
-      <div class="day-label" id="day-label-text">Día de entrenamiento</div>
       <div class="day-number">
         <span id="days-count">—</span>
         <span class="day-slash">/</span>
@@ -576,10 +551,9 @@
   const diffRace   = Math.ceil((RACE_DATE - today) / (1000 * 60 * 60 * 24));
   const pct        = ((currentDay / TOTAL_DAYS) * 100).toFixed(2);
 
-  document.getElementById('days-count').textContent     = currentDay;
-  document.getElementById('days-left').textContent      = diffRace + ' días';
-  document.getElementById('day-label-text').textContent = 'Día ' + currentDay + ' de entrenamiento';
-  document.getElementById('progress-mid').textContent   = currentDay + '/163';
+  document.getElementById('days-count').textContent   = currentDay;
+  document.getElementById('days-left').textContent    = diffRace + ' días';
+  document.getElementById('progress-mid').textContent = currentDay + '/163';
 
   const fill = document.querySelector('.progress-fill');
   fill.style.setProperty('--target-width', pct + '%');
